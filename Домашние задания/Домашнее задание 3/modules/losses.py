@@ -47,7 +47,11 @@ class LinearLoss(BaseLoss):
         -------
         : float
         """
-        pass
+        N = X.shape[0]
+        MSE = np.linalg.norm(X.dot(w) - y, ord=2)
+        w_norm = np.linalg.norm(w[1:], ord=2)
+        return 1 / N * (MSE ** 2) + self.l2_coef * (w_norm ** 2)
+
 
     def grad(self, X, y, w):
         """
@@ -62,5 +66,7 @@ class LinearLoss(BaseLoss):
         -------
         : 1d numpy.ndarray
         """
-        pass
-
+        N = X.shape[0]
+        l2_grad = 2 * self.l2_coef * w
+        l2_grad[0] = 0
+        return 2 / N * X.T.dot(X.dot(w) - y) + l2_grad
